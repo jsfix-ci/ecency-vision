@@ -14,6 +14,8 @@ import SERVERS from "../constants/servers.json";
 import { dataLimit } from "./bridge";
 import moment from "moment";
 
+import data from "./announcement.json";
+
 export const client = new Client(SERVERS, {
   timeout: 3000,
   failoverThreshold: 3,
@@ -29,6 +31,13 @@ export interface Vote {
   voter: string;
   weight: number;
   reward?: number;
+}
+export interface Announcement {
+  id: number;
+  title: string;
+  description: string;
+  button_text: string;
+  button_link: string;
 }
 
 export interface DynamicGlobalProperties {
@@ -544,3 +553,6 @@ export interface BlogEntry {
 
 export const getBlogEntries = (username: string, limit: number = dataLimit): Promise<BlogEntry[]> =>
   client.call("condenser_api", "get_blog_entries", [username, 0, limit]);
+
+export const getAnnouncementsData = (username: string, limit: number = dataLimit): Announcement[] =>
+  data;

@@ -11,9 +11,10 @@ import {
   AddAction,
   DeleteAction
 } from "./types";
+import { getAnnouncements } from "../../components/announcement";
 import { ActionTypes as ActiveUserActionTypes } from "../active-user/types";
 
-import { getBlogEntries } from "../../api/hive";
+import { getBlogEntries, getAnnouncementsData } from "../../api/hive";
 
 export const initialState: Reblogs = {
   list: [],
@@ -79,6 +80,9 @@ export const fetchReblogs = () => (dispatch: Dispatch, getState: () => AppState)
 
     dispatch(fetchedAct(items));
   });
+
+  const announcementData = getAnnouncementsData(activeUser.username, 200);
+  getAnnouncements(announcementData);
 };
 
 export const addReblog = (author: string, permlink: string) => (dispatch: Dispatch) => {
