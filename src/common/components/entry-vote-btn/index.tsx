@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, MouseEventHandler } from "react";
 
 import { Form, FormControl } from "react-bootstrap";
 
@@ -27,6 +27,7 @@ import _c from "../../util/fix-class-names";
 import { chevronDownSvgForSlider, chevronUpSvgForSlider, chevronUpSvgForVote } from "../../img/svg";
 import ClickAwayListener from "../clickaway-listener";
 import { _t } from "../../i18n";
+import VotingSlider from "../entry-vote-slider";
 
 const setVoteValue = (
   type: "up" | "down" | "downPrevious" | "upPrevious",
@@ -67,6 +68,8 @@ interface VoteDialogState {
   wrongValueDown: boolean;
   initialVoteValues: { up: any; down: any };
 }
+
+const initialSliderLabelList: Array<number> = [10, 20, 30, 40, 50, 60, 70, 80, 90];
 
 export class VoteDialog extends Component<VoteDialogProps, VoteDialogState> {
   state: VoteDialogState = {
@@ -158,10 +161,8 @@ export class VoteDialog extends Component<VoteDialogProps, VoteDialogState> {
     return voteValue * sign;
   };
 
-  upSliderChanged = (e: React.ChangeEvent<typeof FormControl & HTMLInputElement>) => {
-    const {
-      target: { id, value }
-    } = e;
+  // upSliderChanged = (e: React.ChangeEvent<typeof FormControl & HTMLInputElement>) => {
+  upSliderChanged = (value: number) => {
     const upSliderVal = Number(value);
     const { initialVoteValues } = this.state;
     const { upVoted } = this.props;
@@ -176,10 +177,11 @@ export class VoteDialog extends Component<VoteDialogProps, VoteDialogState> {
     });
   };
 
-  downSliderChanged = (e: React.ChangeEvent<typeof FormControl & HTMLInputElement>) => {
-    const {
-      target: { id, value }
-    } = e;
+  // downSliderChanged = (e: React.ChangeEvent<typeof FormControl & HTMLInputElement>) => {
+  downSliderChanged = (value: number) => {
+    //   const {
+    //     target: { id, value }
+    //   } = e;
     const downSliderVal = Number(value);
     const { initialVoteValues } = this.state;
     const { upVoted, downVoted } = this.props;
@@ -290,17 +292,7 @@ export class VoteDialog extends Component<VoteDialogProps, VoteDialogState> {
                 <FormattedCurrency {...this.props} value={this.estimate(upSliderVal)} fixAt={3} />
               </div>
               <div className="slider slider-up">
-                <Form.Control
-                  autoFocus={true}
-                  type="range"
-                  custom={true}
-                  step={0.1}
-                  min={0}
-                  max={100}
-                  value={upSliderVal}
-                  onChange={this.upSliderChanged}
-                  id={`${post_id || id}`}
-                />
+                <VotingSlider value={upSliderVal} setVoteValue={this.upSliderChanged} mode={mode} />
               </div>
               <div className="percentage">{`${upSliderVal && upSliderVal.toFixed(1)}%`}</div>
               <div
@@ -345,16 +337,10 @@ export class VoteDialog extends Component<VoteDialogProps, VoteDialogState> {
                 <FormattedCurrency {...this.props} value={this.estimate(downSliderVal)} fixAt={3} />
               </div>
               <div className="slider slider-down">
-                <Form.Control
-                  type="range"
-                  custom={true}
-                  step={0.1}
-                  min={-100}
-                  max={-1}
+                <VotingSlider
                   value={downSliderVal}
-                  onChange={this.downSliderChanged}
-                  id={`${post_id || id}`}
-                  className="reverse-range"
+                  setVoteValue={this.downSliderChanged}
+                  mode={mode}
                 />
               </div>
               <div className="percentage">{`${downSliderVal.toFixed(1)}%`}</div>
